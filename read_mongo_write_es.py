@@ -1,5 +1,6 @@
 #!/usr/bin/env python3      
 # -*- coding: utf-8 -*-
+import datetime
 import sys
 
 import pymongo
@@ -9,8 +10,11 @@ sys.path.append(sys.path[0])
 from common import es_helper, config
 
 
-def get_query():
-    return {}
+def get_query(date_str):
+    date = datetime.datetime.strptime(date_str, "%Y-%m-%d")
+    date_lower = date.strftime("%Y-%m-%d %H:%M:%S")
+    date_up = (date + datetime.timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
+    return {"create_time": {"$gte": date_lower, "$lt": date_up}}
 
 
 if __name__ == '__main__':
@@ -20,6 +24,12 @@ if __name__ == '__main__':
 
     path = sys.argv[1]
     conf = config.init_config(path)
+
+    date = datetime.datetime.today() + datetime.timedelta(days=-1)
+    date_str = datetime.datetime(date.year, date.month, date.day).strftime("%Y-%m-%d")
+
+    if len(sys.argv) >= 3:
+        date_str = sys.argv[2]
 
     hosts = conf.get("es").get("hosts")
     settings = conf.get("es").get("settings")
@@ -42,7 +52,9 @@ if __name__ == '__main__':
 
     lists = []
 
-    for i in collection.find(get_query()):
+    print(get_query(date_str))
+
+    for i in collection.find(get_query(date_str)):
 
         if len(lists) > 1000:
             es.insert_mary(collection_name, "info", lists)
