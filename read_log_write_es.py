@@ -72,12 +72,8 @@ if __name__ == '__main__':
 
     path = conf.get("file").get("dir")
 
-    hosts = conf.get("es").get("hosts")
-    settings = conf.get("es").get("settings")
-    mappings = conf.get("es").get("mappings")
-
     yesterday = (datetime.datetime.today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
-    es = eh.EsHelper(hosts, settings, mappings)
+    es = eh.EsHelper(conf)
     res = {}
 
     dirs = os.listdir(path)

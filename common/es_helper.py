@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import elasticsearch
 from elasticsearch.helpers import bulk
+from common.logger import Log
 
 
 def get_source(index_name, doc_type, _id, data):
@@ -17,11 +18,12 @@ def get_source(index_name, doc_type, _id, data):
 
 
 class EsHelper:
-    def __init__(self, hosts, settings, mappings):
-        self.es = elasticsearch.Elasticsearch(hosts=hosts)
-        self.settings = settings
-        self.mappings = mappings
-        pass
+    def __init__(self, config):
+        self.es = elasticsearch.Elasticsearch(hosts=config.get("es").get("hosts"))
+        self.settings = config.get("es").get("settings")
+        self.mappings = config.get("es").get("mappings")
+        log_file = config.get("log").get("file")
+        self.log = Log(log_file)
 
     def insert_mary(self, index_name, doc_type, actions):
         """
@@ -34,4 +36,8 @@ class EsHelper:
         if self.es.indices.exists(index=index_name) is not True:
             self.es.indices.create(index=index_name, body=self.settings)
             self.es.indices.put_mapping(index=index_name, doc_type=doc_type, body=self.mappings)
-        bulk(self.es, actions=actions, index=index_name)
+        try:
+            bulk(self.es, actions=actions, index=index_name)
+        except Exception as e:
+            self.log.info(index_name)
+            self.log.info(e)
