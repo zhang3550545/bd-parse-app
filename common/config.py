@@ -18,6 +18,9 @@ def init_config(path):
     hosts = conf.get("es", "hosts")
     settings = conf.get("es", "settings")
     mappings = conf.get("es", "mappings")
+    max_bulk_size = conf.get("es", "max_bulk_size")
+    min_bulk_size = conf.get("es", "min_bulk_size")
+    min_doc_type = conf.get("es", "min_doc_type")
     # file
     dir = conf.get("file", "dir")
     # log
@@ -25,5 +28,8 @@ def init_config(path):
 
     return {
         "mongodb": {"host": host, "port": port, "user": user, "password": password, "db": db, "collection": collection,
-                    "buffer_size": buffer_size}, "es": {"hosts": hosts, "settings": settings, "mappings": mappings},
-        "file": {"dir": dir}, "log": {"file": file}}
+                    "buffer_size": buffer_size},
+        "es": {"hosts": hosts, "settings": settings, "mappings": mappings, "max_bulk_size": max_bulk_size,
+               "min_bulk_size": min_bulk_size, "min_doc_type": min_doc_type},
+        "file": {"dir": dir},
+        "log": {"file": file}}

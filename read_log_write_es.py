@@ -20,17 +20,24 @@ def buffer_data(data, doc_type, _id, date):
     :param date: 日期
     :return:
     """
+
+    bulk_size = int(conf.get("es").get("max_bulk_size"))
+    min_bulk_size = int(conf.get("es").get("min_bulk_size"))
+    min_doc_type = conf.get("es").get("min_doc_type")
+
     if data.get("message") is None:
         index = doc_type + "request" + date
     else:
         index = doc_type + "response" + date
+        if min_doc_type == doc_type or doc_type in min_doc_type:
+            bulk_size = min_bulk_size
 
     lists = res.get(index)
     if lists is None:
         lists = [eh.get_source(index, doc_type, _id, data)]
     else:
         lists.append(eh.get_source(index, doc_type, _id, data))
-    if len(lists) > 1000:
+    if len(lists) > bulk_size:
         es.insert_mary(index, doc_type, lists)
         lists.clear()
     res[index] = lists

@@ -38,6 +38,5 @@ class EsHelper:
             self.es.indices.put_mapping(index=index_name, doc_type=doc_type, body=self.mappings)
         try:
             bulk(self.es, actions=actions, index=index_name)
-        except Exception as e:
-            self.log.info(index_name)
-            self.log.info(e)
+        except:
+            self.log.info("index_name: " + index_name)

@@ -21,7 +21,7 @@ def insert_mary_es(es, db, collection_name, date_str, buffersize=1000):
     lists = []
     collection = db[collection_name]
     query = get_query(date_str)
-    index_name = collection_name + date_str
+    index_name = collection_name + date_str.replace("-", "")
     type_name = collection_name
     for i in collection.find(query):
         if len(lists) > buffersize:
