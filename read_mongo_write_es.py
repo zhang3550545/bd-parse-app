@@ -17,17 +17,19 @@ def get_query(date_str):
     return {"create_time": {"$gte": date_lower, "$lt": date_up}}
 
 
-def insert_mary_es(es, db, collection_name, date_str, buffer_size=1000):
+def insert_mary_es(es, db, collection_name, date_str, buffersize=1000):
     lists = []
     collection = db[collection_name]
     query = get_query(date_str)
+    index_name = collection_name + date_str
+    type_name = collection_name
     for i in collection.find(query):
-        if len(lists) > buffer_size:
-            es.insert_mary(collection_name, "info", lists)
+        if len(lists) > buffersize:
+            es.insert_mary(index_name, type_name, lists)
             lists.clear()
-        lists.append(es_helper.get_source(collection_name, "info", str(i.pop("_id")), i))
+        lists.append(es_helper.get_source(index_name, type_name, str(i.pop("_id")), i))
     if len(lists) > 0:
-        es.insert_mary(collection_name, "info", lists)
+        es.insert_mary(index_name, type_name, lists)
         lists.clear()
 
 
