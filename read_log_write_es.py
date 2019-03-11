@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 import sys
+import time
 
 sys.path.append(sys.path[0])
 
@@ -20,7 +21,6 @@ def buffer_data(data, doc_type, _id, date):
     :param date: 日期
     :return:
     """
-
     bulk_size = int(conf.get("es").get("max_bulk_size"))
     min_bulk_size = int(conf.get("es").get("min_bulk_size"))
     min_doc_type = conf.get("es").get("min_doc_type")
@@ -37,6 +37,10 @@ def buffer_data(data, doc_type, _id, date):
         lists = [eh.get_source(index, doc_type, _id, data)]
     else:
         lists.append(eh.get_source(index, doc_type, _id, data))
+
+    # 记录index name的count数，用于校验数据的一致性
+    dict_count[index] = dict_count.get(index, 0) + 1
+
     if len(lists) > bulk_size:
         es.insert_mary(index, doc_type, lists)
         lists.clear()
@@ -88,6 +92,13 @@ if __name__ == '__main__':
     es = eh.EsHelper(conf)
     res = {}
 
+    dict_count = {}
+
     dirs = os.listdir(path)
     for i in dirs:
         write_es(path + "/" + i, date_str)
+
+    time.sleep(60)
+
+    for i in dict_count:
+        es.check(i, dict_count[i])

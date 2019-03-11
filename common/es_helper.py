@@ -40,3 +40,26 @@ class EsHelper:
             bulk(self.es, actions=actions, index=index_name)
         except:
             self.log.info("index_name: " + index_name)
+
+    def count(self, index_name):
+        """
+        获取index name的count数量
+        :param index_name:
+        :return: count
+        """
+        count = self.es.count(index=index_name)
+        return count.get("count")
+
+    def check(self, index_name, original_count):
+        """
+
+        :param index_name:
+        :param orginal_count:
+        :return:
+        """
+        es_count = self.count(index_name)
+        if es_count != original_count:
+            self.log.info(
+                "index_name：%s 数据不一致，original count：%s，es count：%s" % (index_name, str(original_count), str(es_count)))
+        else:
+            self.log.info("index_name：%s 数据一致,写入es成功" % index_name)

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 import sys
+import time
 
 import pymongo
 
@@ -23,14 +24,20 @@ def insert_mary_es(es, db, collection_name, date_str, buffersize=1000):
     query = get_query(date_str)
     index_name = collection_name + date_str.replace("-", "")
     type_name = collection_name
+    count = 0
     for i in collection.find(query):
+        count = count + 1
         if len(lists) > buffersize:
             es.insert_mary(index_name, type_name, lists)
             lists.clear()
         lists.append(es_helper.get_source(index_name, type_name, str(i.pop("_id")), i))
+
     if len(lists) > 0:
         es.insert_mary(index_name, type_name, lists)
         lists.clear()
+
+    # 记录mongodb的数据总数
+    dict_count[index_name] = count
 
 
 if __name__ == '__main__':
@@ -66,6 +73,7 @@ if __name__ == '__main__':
     mydb.authenticate(user, password)
     mydb = client[db]
 
+    dict_count = {}
     if len(collection_lists) == 0:
         insert_mary_es(es, mydb, collection_names, date_str, buffer_size)
     else:
@@ -73,3 +81,8 @@ if __name__ == '__main__':
             insert_mary_es(es, mydb, i, date_str, buffer_size)
 
     client.close()
+
+    time.sleep(60)
+    # check mongodb count 和 write es count是否一致
+    for i in dict_count:
+        es.check(i, dict_count[i])
