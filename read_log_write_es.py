@@ -82,12 +82,12 @@ if __name__ == '__main__':
     conf = config.init_config(config_path)
     path = conf.get("file").get("dir")
 
-    date_str = (datetime.datetime.today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
+    date_str = (datetime.datetime.today() - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 
     if len(sys.argv) >= 3:
         date_str = sys.argv[2]
 
-    # path = path+"/"+date_str
+    path = path + "/" + date_str
 
     es = eh.EsHelper(conf)
     res = {}
@@ -96,7 +96,7 @@ if __name__ == '__main__':
 
     dirs = os.listdir(path)
     for i in dirs:
-        write_es(path + "/" + i, date_str)
+        write_es(path + "/" + i, date_str.replace("-", ""))
 
     time.sleep(60)
 
