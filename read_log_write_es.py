@@ -63,7 +63,8 @@ def write_es(file_name, date):
             dicts["dzjk_create_time"] = line[:23]
             dicts["dzjk_update_time"] = line[:23]
             service_code = dicts["header"]["serviceCode"].lower()
-            buffer_data(utils.clear_json(data=dicts), service_code, _id, date)
+            if service_code in vaild_type or vaild_type == "all":  # 使用vaild_type，指定需要搜集哪种渠道的数据，all表示所有
+                buffer_data(utils.clear_json(data=dicts), service_code, _id, date)
 
         for line in res:
             if "request" in line:
@@ -81,6 +82,7 @@ if __name__ == '__main__':
     config_path = sys.argv[1]
     conf = config.init_config(config_path)
     path = conf.get("file").get("dir")
+    vaild_type = conf.get("es").get("vaild_type")
 
     date_str = (datetime.datetime.today() - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 
