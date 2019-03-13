@@ -7,5 +7,5 @@ fi
 
 echo ${d}
 
-python ./read_log_write_es.py ./common/config.ini ${d}
-python ./read_mongo_write_es.py ./common/config.ini ${d}
+python ./read_log_write_es.py ./common/dev_config.ini ${d}
+python ./read_mongo_write_es.py ./common/dev_config.ini ${d}
