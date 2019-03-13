@@ -67,11 +67,8 @@ def write_es(file_name, date):
                 buffer_data(utils.clear_json(data=dicts), service_code, _id, date)
 
         for line in res:
-            if "request" in line:
-                print(line[:-15])
-                es.insert_mary(line, line[:-15], res[line])
-            elif "response" in line:
-                es.insert_mary(line, line[:-16], res[line])
+            doc_type = utils.get_doc_type(index_name=line)
+            es.insert_mary(line, doc_type, res[line])
 
 
 if __name__ == '__main__':

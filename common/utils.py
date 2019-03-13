@@ -54,3 +54,19 @@ def clear_json(data):
         data = clear_dict_element(data)
 
     return data
+
+
+def get_doc_type(index_name, month=False):
+    doc_type = ""
+    if "request" in index_name:
+        if month:
+            doc_type = index_name[:-13]
+        else:
+            doc_type = index_name[:-15]
+    elif "response" in index_name:
+        if month:
+            doc_type = index_name[:-14]
+        else:
+            doc_type = index_name[:-16]
+
+    return doc_type
