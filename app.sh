@@ -7,5 +7,5 @@ fi
 
 echo ${d}
 
-python3 ./read_log_write_es.py ./common/config.ini ${d}
-python3 ./read_mongo_write_es.py ./common/config.ini ${d}
+python /bdapp/bd-dzjk-parse-app/read_log_write_es.py /bdapp/bd-dzjk-parse-app/common/config.ini ${d}
+python /bdapp/bd-dzjk-parse-app/read_mongo_write_es.py /bdapp/bd-dzjk-parse-app/common/config.ini ${d}
