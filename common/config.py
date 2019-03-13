@@ -21,7 +21,7 @@ def init_config(path):
     max_bulk_size = conf.get("es", "max_bulk_size")
     min_bulk_size = conf.get("es", "min_bulk_size")
     min_doc_type = conf.get("es", "min_doc_type")
-    vaild_type = conf.get("es", "vaild_type")
+    vaild_type = conf.get("es", "vaild_type").lower()
     # file
     dir = conf.get("file", "dir")
     # log
