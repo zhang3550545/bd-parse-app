@@ -1,3 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea/workspace.xml
 *.log
+.idea/inspectionProfiles/
+common/__pycache__/
+mysql_table

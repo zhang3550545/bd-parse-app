@@ -78,7 +78,7 @@ if __name__ == '__main__':
 
     config_path = sys.argv[1]
     conf = config.init_config(config_path)
-    path = conf.get("file").get("dir")
+    path = conf.get("infile").get("dir")
     vaild_type = conf.get("es").get("vaild_type")
 
     date_str = (datetime.datetime.today() - datetime.timedelta(days=1)).strftime("%Y-%m-%d")

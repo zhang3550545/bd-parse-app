@@ -1,5 +1,8 @@
 #!/usr/bin/env python3      
 # -*- coding: utf-8 -*-
+import json
+import os
+
 
 def clear_list_element(data):
     """
@@ -70,3 +73,50 @@ def get_doc_type(index_name, month=False):
             doc_type = index_name[:-16]
 
     return doc_type
+
+
+def get_file_path(path):
+    """
+    获取所有文件路径
+    :param path: 路径
+    :return: 路径列表
+    """
+    file_paths = []
+    if os.path.isfile(path):
+        file_paths.append(path)
+    elif os.path.isdir(path):
+        for i in os.listdir(path):
+            paths = get_file_path(path + "/" + i)
+            file_paths = file_paths + paths
+
+    return file_paths
+
+
+def create_table_sql(table_name, line):
+    """
+    拼接创建sql的语句
+    :param table_name: 表名
+    :param line: json数据
+    :return: create sql语句
+    """
+    sql = "create table if not exists %s ( id bigint(32) not null auto_increment," % table_name
+    dicts = json.loads(line)
+    for i in dicts:
+        if isinstance(dicts[i], int):
+            sql = sql + i + " bigint(32),"
+        elif isinstance(dicts[i], str):
+            sql = sql + i + " varchar(255),"
+        else:
+            sql = sql + i + " varchar(255),"
+    sql = sql + "PRIMARY KEY (id))ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+    return sql
+
+
+def insert_into_sql(table_name, line):
+    keys = ""
+    values = ""
+    for i in json.loads(line):
+        keys = keys + i + ","
+        values = values + "%s,"
+
+    return "insert into %s(%s) values(%s);" % (table_name, keys[:-1], values[:-1])
