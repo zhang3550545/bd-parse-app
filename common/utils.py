@@ -108,6 +108,7 @@ def create_table_sql(table_name, line):
             sql = sql + i + " varchar(255),"
         else:
             sql = sql + i + " varchar(255),"
+    sql = sql + "create_time datetime not null default CURRENT_TIMESTAMP,update_time datetime not null default CURRENT_TIMESTAMP,"
     sql = sql + "PRIMARY KEY (id))ENGINE=InnoDB DEFAULT CHARSET=utf8;"
     return sql
 
