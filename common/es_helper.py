@@ -70,6 +70,17 @@ class EsHelper:
         count = self.es.count(index=index_name)
         return count.get("count")
 
+    def count_list(self, index_name_list):
+        """
+        计算多个index的count数量
+        :param index_name_list:
+        :return: count
+        """
+        count = 0
+        for i in index_name_list:
+            count = count + self.count(i)
+        return count
+
     def check(self, index_name, original_count):
         """
         检查数据插入的是否一致
@@ -98,3 +109,13 @@ class EsHelper:
                 result.append(index_name)
 
         return result
+
+    def delete_all(self, index_name, doc_type):
+        """
+        删除所有的doc数据
+        :param index_name:
+        :param doc_type:
+        :return:
+        """
+        query_all = {"query": {"match_all": {}}}
+        self.es.delete_by_query(index=index_name, body=query_all, doc_type=doc_type)
