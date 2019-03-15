@@ -120,5 +120,7 @@ def insert_into_sql(table_name, line):
     for i in json.loads(line):
         keys = keys + i + ","
         values = values + "%s,"
-
-    return "insert into %s(%s) values(%s);" % (table_name, keys[:-1], values[:-1])
+    # 添加一个partition_key字段
+    keys = keys + "partition_key"
+    values = values + "%s"
+    return "insert into %s(%s) values(%s);" % (table_name, keys, values)
