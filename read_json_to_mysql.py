@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import datetime
 import json
 import sys
 
@@ -11,30 +12,33 @@ sys.path.append(sys.path[0])
 if __name__ == '__main__':
 
     """
-    调用方式：python read_json_to_mysql.py config_path base_dir_path date
+    调用方式：python read_json_to_mysql.py config_path date[可选]
     参数：  
         config_path: 配置文件路径
-        base_dir_path：读取Spark写入的数据路径目录
-        date：格式如：20190101
+        date：格式如：20190101，默认昨天的日期
     """
 
-    if len(sys.argv) <= 3:
+    if len(sys.argv) <= 1:
         raise Exception("参数不对")
 
     config_path = sys.argv[1]
     conf = config.init_config(config_path)
     m = MySQLHelper(conf)
 
-    path = sys.argv[2]
+    # 从配置文件中获取对应的路径
+    path = conf.get("outfile").get("path")
 
-    date = sys.argv[3]
+    # 默认昨天的日期
+    date = (datetime.datetime.today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
+    if len(sys.argv) >= 3:
+        date = sys.argv[2]
+
     table_name = path.split("/")[-1]
 
     path = path + "/" + date
     paths = utils.get_file_path(path)
 
     insert_sql = ""
-    create_sql = ""
 
     values = []
     for i in paths:

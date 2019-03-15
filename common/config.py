@@ -25,7 +25,8 @@ def init_config(path):
     # infile
     dir = conf.get("infile", "dir")
 
-    # outfile 暂时从外面传入
+    # outfile
+    path = conf.get("outfile", "path")
 
     # mysql
     mysql_host = conf.get("mysql", "host")
@@ -43,5 +44,6 @@ def init_config(path):
         "es": {"hosts": hosts, "settings": settings, "mappings": mappings, "max_bulk_size": max_bulk_size,
                "min_bulk_size": min_bulk_size, "min_doc_type": min_doc_type, "vaild_type": vaild_type},
         "infile": {"dir": dir},
+        "outfile": {"path": path},
         "mysql": {"host": mysql_host, "port": mysql_port, "user": mysql_user, "passwd": mysql_passwd, "db": mysql_db},
         "log": {"file": file}}
