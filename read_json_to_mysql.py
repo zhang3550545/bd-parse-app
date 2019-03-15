@@ -33,33 +33,31 @@ if __name__ == '__main__':
     if len(sys.argv) >= 3:
         date = sys.argv[2]
 
-    table_name = path.split("/")[-1]
-
     path = path + "/" + date
     paths = utils.get_file_path(path)
 
-    insert_sql = ""
+    insert_sqls = {}
 
-    values = []
     for i in paths:
-        with open(i, mode="r") as f:
+        table_name = i.split("/")[-2]
+        with open(i, mode="r", encoding="utf-8") as f:
+            values = []
             for i in f:
-                if insert_sql == "":  # 创建插入语句
-                    insert_sql = utils.insert_into_sql(table_name, i)
-                value = []
+                insert_sql = insert_sqls.get(table_name)
+                if insert_sql == "" or insert_sql is None:  # 创建插入语句
+                    insert_sql = m.get_insert_table_sql(table_name)
+                    insert_sqls[table_name] = insert_sql
+
                 dicts = json.loads(i)
-                for j in dicts:
-                    value.append(dicts[j])
-                # 添加date字段（分区的key）
-                value.append(date)
+                value = m.get_row(table_name, date, dicts)
                 values.append(value)
 
                 if len(values) > 1000:
-                    m.executemany(insert_sql, values)
+                    m.executemany(insert_sqls.get(table_name), values)
                     values.clear()
 
-    if len(values) > 0:
-        m.executemany(insert_sql, values)
-        values.clear()
+            if len(values) > 0:
+                m.executemany(insert_sqls.get(table_name), values)
+                values.clear()
 
     m.close()

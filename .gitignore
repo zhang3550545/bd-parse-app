@@ -4,3 +4,4 @@
 .idea/inspectionProfiles/
 common/__pycache__/
 mysql_table
+textjson

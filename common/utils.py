@@ -82,7 +82,7 @@ def get_file_path(path):
     :return: 路径列表
     """
     file_paths = []
-    if os.path.isfile(path):
+    if os.path.isfile(path) and ".crc" not in path:
         file_paths.append(path)
     elif os.path.isdir(path):
         for i in os.listdir(path):
@@ -112,15 +112,3 @@ def create_table_sql(table_name, line):
     sql = sql + "update_time datetime not null default CURRENT_TIMESTAMP,"
     sql = sql + "PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
     return sql
-
-
-def insert_into_sql(table_name, line):
-    keys = ""
-    values = ""
-    for i in json.loads(line):
-        keys = keys + i + ","
-        values = values + "%s,"
-    # 添加一个partition_key字段
-    keys = keys + "partition_key"
-    values = values + "%s"
-    return "insert into %s(%s) values(%s);" % (table_name, keys, values)
