@@ -73,6 +73,10 @@ def write_es(file_name, date):
 
 if __name__ == '__main__':
 
+    """
+    写入es的脚本
+    """
+
     if len(sys.argv) <= 1:
         raise Exception("params error. you need add config file path")
 

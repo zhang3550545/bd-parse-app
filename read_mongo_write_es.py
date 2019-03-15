@@ -42,6 +42,10 @@ def insert_mary_es(es, db, collection_name, date_str, buffersize=1000):
 
 if __name__ == '__main__':
 
+    """
+    mongo 写入 es
+    """
+
     if len(sys.argv) <= 1:
         raise Exception("params error. you need add config file path")
 
