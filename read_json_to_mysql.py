@@ -12,9 +12,10 @@ sys.path.append(sys.path[0])
 if __name__ == '__main__':
 
     """
-    调用方式：python read_json_to_mysql.py config_path date[可选]
+    调用方式：python read_json_to_mysql.py config_path task_name date[可选]
     参数：  
         config_path: 配置文件路径
+        task_name: 任务名称
         date：格式如：20190101，默认昨天的日期
     """
 
