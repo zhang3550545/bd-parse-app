@@ -18,7 +18,7 @@ if __name__ == '__main__':
         date：格式如：20190101，默认昨天的日期
     """
 
-    if len(sys.argv) <= 1:
+    if len(sys.argv) <= 3:
         raise Exception("参数不对")
 
     config_path = sys.argv[1]
@@ -28,12 +28,15 @@ if __name__ == '__main__':
     # 从配置文件中获取对应的路径
     path = conf.get("outfile").get("path")
 
+    task_name = sys.argv[2]
+
     # 默认昨天的日期
     date = (datetime.datetime.today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
-    if len(sys.argv) >= 3:
-        date = sys.argv[2]
+    if len(sys.argv) >= 4:
+        date = sys.argv[3]
 
-    path = path + "/" + date
+    # 拼接spark sql任务落地的文件路径：任务名+日期+表名（不包含.json这样的后缀）
+    path = path + "/" + task_name + "/" + date
     paths = utils.get_file_path(path)
 
     insert_sqls = {}
