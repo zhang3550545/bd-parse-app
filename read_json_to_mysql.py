@@ -39,7 +39,7 @@ if __name__ == '__main__':
     insert_sqls = {}
 
     for i in paths:
-        table_name = i.split("/")[-2]
+        table_name = i.split("/")[-1]
         with open(i, mode="r", encoding="utf-8") as f:
             values = []
             for i in f:
